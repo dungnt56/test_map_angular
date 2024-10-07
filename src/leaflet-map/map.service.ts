@@ -56,11 +56,24 @@ export class MapService {
   getMap(): L.Map | undefined {
     return this.map;
   }
-  addPolygon(geoJsonData: any, style?: L.PathOptions) {
+  addPolygon(geoJsonData: any, style?: L.PathOptions | null) {
     if (!this.map) {
       throw new Error('Map is not initialized');
     }
+    if (!style) {
+      style = this.getStyle();
+    }
     const polygon = L.geoJSON(geoJsonData, { style }).addTo(this.map);
-    this.map.fitBounds(polygon.getBounds());
+    // this.map.fitBounds(polygon.getBounds());
+  }
+  getStyle() {
+    return {
+      fillColor: '#a09191',
+      weight: 1,
+      opacity: 0.5,
+      color: '#db1e1e',
+      dashArray: '3',
+      fillOpacity: 0.5
+    };
   }
 }
