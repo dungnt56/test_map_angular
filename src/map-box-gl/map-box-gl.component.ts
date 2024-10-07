@@ -24,13 +24,19 @@ export class MapBoxGlComponent implements OnInit  {
       projection: 'globe'
     });
 
+    const language = new MapboxLanguage({
+      defaultLanguage: 'vi', // Vietnamese
+    // @ts-ignore
+      languages: ['vi', 'en'] // Add more languages as needed
+    });
+    this.map.addControl(language);
     // Chuyển ngôn ngữ sang tiếng Việt sau khi bản đồ được tải
     this.map.on('load', () => {
       this.map.setLayoutProperty('country-label', 'text-field', ['get', 'name_vi']);
     });
-    this.map.addControl(new MapboxLanguage({
-      defaultLanguage: 'vi'  // Đặt ngôn ngữ mặc định là tiếng Việt
-    }));
+    // this.map.addControl(new MapboxLanguage({
+    //   defaultLanguage: 'vi'  // Đặt ngôn ngữ mặc định là tiếng Việt
+    // }));
   }
 
 }
