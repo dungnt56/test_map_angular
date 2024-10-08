@@ -3,6 +3,7 @@ import * as L from 'leaflet';
 import { Language } from '@maptiler/sdk';
 import * as maptiler from '@maptiler/sdk';
 import {MapService} from "./map.service";
+import * as jsonData from '../assets/data/sorted.json';
 @Component({
   selector: 'app-leaflet-map',
   standalone: true,
@@ -11,28 +12,35 @@ import {MapService} from "./map.service";
   styleUrl: './leaflet-map.component.css'
 })
 export class LeafletMapComponent implements OnInit, AfterViewInit {
+  private containerId = 'map';
   private map: L.Map | undefined;
+  data = jsonData;
+
+  constructor(private mapService: MapService) {}
 
   ngOnInit(): void {
-    this.initMap();
+    // Khởi tạo bản đồ
+    this.map = this.mapService.initMap(this.containerId, [21.028511, 105.804817], 13);
+    this.mapService.addTileLayer(this.containerId);
+
+    // Thêm lớp tile
+
+    // Thêm sự kiện click để hiển thị toạ độ khi click trên bản đồ
+    this.mapService.addClickEvent(this.containerId, (e: L.LeafletMouseEvent) => {
+
+    });
   }
-  constructor(private elementRef: ElementRef,
-              private mapService: MapService) { }
-
-
-
-  private initMap(): void {
-    this.map = L.map('map').setView([21.027, 105.854], 12);
-    this.mapService.createTileLayer().addTo(this.map);
-  }
-
-  ngAfterViewInit() {
+  ngAfterViewInit(): void {
+    console.log(this.data)
     this.addPolygonFromJson();
   }
 
+  // Dọn dẹp bản đồ khi component bị hủy
+  ngOnDestroy(): void {
+    this.mapService.destroyMap(this.containerId);
+  }
 
   private addPolygonFromJson(): void {
-    // Dữ liệu JSON được cung cấp
     const jsonData = {
       "level1_id": "01",
       "name": "Thành phố Hà Nội",
@@ -1647,8 +1655,6 @@ export class LeafletMapComponent implements OnInit, AfterViewInit {
       ],
       "type": "MultiPolygon"
     };
-
-    // const coordinates = jsonData.level2s[0].coordinates;
     const listDistrict = jsonData.level2s;
 
     listDistrict.forEach((district) => {
@@ -1658,15 +1664,10 @@ export class LeafletMapComponent implements OnInit, AfterViewInit {
           type: 'MultiPolygon',
           coordinates: district.coordinates,
         },
-        properties: {
-          name: district.name,
-        },
       };
 
-      // @ts-ignore
-      this.mapService.setMap(this.map);
-      this.mapService.addPolygon(geoJsonData, null);
-      this.map = this.mapService.getMap();
+      this.mapService.addPolygon(this.containerId, geoJsonData, null);
     });
   }
+
 }
