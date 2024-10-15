@@ -123,7 +123,7 @@ export class MapService {
     return {
       fillColor: '#ffffff',   // Màu nền (đặt bất kỳ màu nào, nhưng sẽ không hiển thị vì fillOpacity = 0)
       fillOpacity: 0,         // Nền trong suốt
-      weight: 1,              // Độ dày của đường viền
+      weight: 4,              // Độ dày của đường viền
       color: '#ff0000',       // Màu viền đỏ
       dashArray: '1, 1',      // Nét đứt (số đầu là chiều dài nét, số thứ hai là khoảng trống giữa các nét)
       opacity: 1
